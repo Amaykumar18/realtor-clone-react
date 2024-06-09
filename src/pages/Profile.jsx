@@ -1,12 +1,13 @@
 import { getAuth, updateProfile } from 'firebase/auth';
-import { collection, doc, getDocs, orderBy, query, updateDoc, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, orderBy, query, updateDoc, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { db } from '../firebase';
 import { FcHome } from "react-icons/fc";
-import ListingItmes from '../components/ListingItems';
 import ListingItems from '../components/ListingItems';
+import { FaTrash } from "react-icons/fa6";
+import { MdEdit } from "react-icons/md";
 
 export default function Profile() { 
   const auth= getAuth();
@@ -71,6 +72,22 @@ export default function Profile() {
       }
       fetchUserListings();
     },[auth.currentUser.uid])
+    async function onDelete(listingID){
+      if(window.confirm("Are you sure you want to delete")){
+        await deleteDoc(doc(db, "listings", listingID))
+        const updatedListings = listings.filter(
+          (listings)=> listings.id !== listingID
+        );
+        setListings(updatedListings)
+        toast.success("Successfully deleted the listings");
+
+      }
+
+    }
+    function onEdit(listingID){
+      navigate(`/edit-listing/${listingID}`)
+
+    }
   return (
     <>
       <section className="max-w-6xl mx-auto flex justify-center items-center flex-col">
@@ -130,6 +147,8 @@ export default function Profile() {
                 key={listing.id} 
                 id={listing.id}
                 listing={listing.data}
+                onDelete={()=> onDelete(listing.id)}
+                onEdit={()=> onEdit(listing.id)}
               />
             ))}
           </ul>
