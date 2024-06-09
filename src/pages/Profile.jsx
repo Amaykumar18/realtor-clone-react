@@ -6,9 +6,6 @@ import { toast } from 'react-toastify';
 import { db } from '../firebase';
 import { FcHome } from "react-icons/fc";
 import ListingItems from '../components/ListingItems';
-import { FaTrash } from "react-icons/fa6";
-import { MdEdit } from "react-icons/md";
-
 export default function Profile() { 
   const auth= getAuth();
   const navigate = useNavigate();
